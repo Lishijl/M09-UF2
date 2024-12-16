@@ -9,8 +9,12 @@ public class Principal {
         System.out.println("Termina thread main");
 
         // creem les instancies de Fil Juan i Pepe
-        Fil juan = new Fil("Juan");
-        Fil pepe = new Fil("Pepe");
+        Fil juan = new Fil();
+        Fil pepe = new Fil();
+
+        // com que Fil estén de Threads disposem del mètode setName()
+        juan.setName("Juan");
+        pepe.setName("Pepe");        
 
         // iniciem les instàncies dels fils.
         juan.start();
