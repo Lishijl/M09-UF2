@@ -12,7 +12,7 @@ Definim el comportament del mètode run() sobreescrit de la classe Fil que hered
 
 Imprimeixo la finalització de l'execució del fil fora del for indicant el nom amb getName() novament.
 
-![Comportament 1](screenshots/0-fil-comp-1.png)
+![Comportament Fil 1](screenshots/0-fil-comp-1.png)
 
 Desde la classe Principal es creen dues instàncies tipus Fil, amb les variables de juan i pepe i li assignem noms als fils amb el mètode setName() heredat de la classe Thread.
 
@@ -21,7 +21,8 @@ A continuació executem els fils amb start().
 ![Codi inicial](screenshots/1-codi-original-comp-1.png)
 
 #### SORTIDA:
-![Sortida 1](screenshots/2-sortida-1-comp1.png)
+
+![Sortida 1](screenshots/2-sortida-1-comp-1.png)
 
 ### COMPORTAMENT 2
 
@@ -29,13 +30,13 @@ Ara es prioritza el fil d'en Pepe per sobre d'en Juan, passant-li el paràmetre 
 
 Per aquest comportament només modificarem la classe Principal, indicant amb la constant de Thread, MAX_PRIORITY/MIN_PRIORITY amb el mètode setPriority() heredat de la classe Thread i a continuació executem amb start() per a les dues instàncies.
 
-![alt text](screenshots/3-codi-comp-2.png)
+![Codi comportament 2](screenshots/3-codi-comp-2.png)
 
 #### SORTIDA:
 
 He tingut que executar varies vegades, però mai han sigut exactes, he aconseguit aproximar-m'hi el màxim que he pogut i això demostra que utilizar el setPriority() no garanteix sempre la prioritat d'un fil, també depèn del sistema operatiu. Per això adjunto 3 casos de sortida d'execucions pròximes al que s'espera.
 
-![alt text](screenshots/4-sortida-1-comp-2.png) ![alt text](screenshots/5-sortida-2-comp-2.png) ![alt text](screenshots/6-sortida-3-comp-2.png)
+![Sortida 1](screenshots/4-sortida-1-comp-2.png) ![Sortida 2](screenshots/5-sortida-2-comp-2.png) ![Sortida 3](screenshots/6-sortida-3-comp-2.png)
 
 ### COMPORTAMENT 3
 
@@ -53,8 +54,10 @@ Un cop modificat el filNom, amb el monitor lock cridem el mètode notifyAll() pe
 
 Finalment, al acabar les iteracions notifica la finalització de l'execució dels fils.
 
-![alt text](screenshots/7-codi-comp-3.png)![alt text](screenshots/8-fil-comp-3.png)
+![Codi comportament 3](screenshots/7-codi-comp-3.png)
+
+![Comportament Fil 3](screenshots/8-fil-comp-3.png)
 
 #### SORTIDA:
 
-![alt text](screenshots/9-sortida-1-comp-3.png)
+![Sortida 1](screenshots/9-sortida-1-comp-3.png)
