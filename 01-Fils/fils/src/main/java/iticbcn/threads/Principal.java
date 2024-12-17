@@ -6,18 +6,13 @@ package iticbcn.threads;
 public class Principal {
     public static void main(String[] args) {
         
-        // creem les instancies de Fil Juan i Pepe de tipus Thread a partir de Fil
+        // creem les instancies de Fil Juan i Pepe
         Fil juan = new Fil();
         Fil pepe = new Fil();
         
         // com que Fil estén de Threads disposem del mètode setName()
         juan.setName("Juan");
         pepe.setName("Pepe");
-
-        // prioritzem el fil d'en Pepe abans que el del Juan amb setPriority()
-        // amb les constants de Thread
-        juan.setPriority(Thread.MIN_PRIORITY);
-        pepe.setPriority(Thread.MAX_PRIORITY);
         
         // iniciem les instàncies dels fils.
         juan.start();

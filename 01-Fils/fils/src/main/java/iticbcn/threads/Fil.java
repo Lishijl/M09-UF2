@@ -6,15 +6,39 @@ package iticbcn.threads;
 
 public class Fil extends Thread {
 
-    // sobreescribim run() per personalitzar el comportament que s'executarà
+    // VARIABLES OBLIGATORIAMENT STATICS, per a que sigui accessible desde l'altre instància del fil
+    // objecte monitor que ens servirà sincronitzar el comportament i notificar al de l'altre fil
+    private static final Object lock = new Object();
+    // utilitzaré aquesta variable per controlar el fil de cada execució, començant pel del Juan
+    private static String filNom = "Juan";
+
     @Override
     public void run() {
-        // 10 iteracions per fil mostrant les vegades que itera cada Fil
         for(int i = 1; i < 10; i++) {
-            // imprimeixo el nom del fil per iteració amb el mètode heredat getName() de Thread
-            System.out.println(this.getName() + " " + i);
+            // recurs compartit que sincronitza i alternar les execucions amb el monitor lock
+            synchronized (lock) {
+                // itera mentres el fil actual no sigui el del filNom
+                while (!filNom.equals(this.getName())) {
+                    try {
+                        // fil actual espera al seu torn
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // mentres el while es trobi que els noms dels fils siguin iguals, 
+                // imprimirà l'execució actual, sinó el posara en espera si són diferents.
+                System.out.println(this.getName() + " " + i);
+
+                // controlem que si el fil actual, si es verifica, passa a dir-se amb el nom de l'altre
+                // si no es verifica, li tocarà al fil de Juan a la següent execució
+                // com que només tenim 2 fils, ens despreocupem si hi han altres cadenes 
+                filNom = filNom.equals("Juan") ? "Pepe" : "Juan";
+                
+                // avisa l'altre fil
+                lock.notifyAll();
+            }
         }
-        // notifica quan acaba l'execució del fil
         System.out.println("Termina el fil " + this.getName());
     }
 }
