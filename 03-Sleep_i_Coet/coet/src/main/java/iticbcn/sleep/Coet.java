@@ -17,6 +17,8 @@ public class Coet {
     // valida valor de potencia o llança error
     public void passaAPotencia(int p) {
         if (p >= 0 && p <= 10) {
+            // cada cop que es reb una potencia nova, s'indica i es guarda pel motor
+            System.out.printf("Passant a potència %d\n", p);
             for (Motor mot : motors) {
                 mot.setPotencia(p);
             }
@@ -32,15 +34,16 @@ public class Coet {
     public static void main(String[] args) throws IOException {
         try (BufferedReader input = new BufferedReader(new InputStreamReader(System.in))) {
             Coet coet = new Coet();
-            int pot;
-            do { 
+            // llegeix i passa potencia un primer cop per arrancar els motors fora del while
+            int pot = Integer.parseInt(input.readLine());
+            coet.passaAPotencia(pot);
+            coet.arranca();
+            // per inicialitzar els motors mai pot ser potència 0, un cop dins, 
+            // pot arribar a llegir i passar una potencia objectiu de 0 per aturar el coet
+            while (pot != 0) { 
                 pot = Integer.parseInt(input.readLine());
-                System.out.printf("Passant a potència %d\n", pot);
                 coet.passaAPotencia(pot);
-                coet.arranca();
-                // condició que serveix per acabar després de desincrementar la potencia dels motors
-                if (pot == 0) break;
-            } while (true);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
