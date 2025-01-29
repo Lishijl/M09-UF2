@@ -9,7 +9,8 @@ public class Soci extends Thread{
     private final Random RND;
     private final int MAX_ANYS;
 
-    public Soci() {
+    public Soci(String nom) {
+        super(nom);
         this.COMPTE = Compte.getInstance();
         this.APORTACIO = 10f;
         this.ESPERA_MAX = 100;
@@ -22,15 +23,19 @@ public class Soci extends Thread{
     // el procediment que fara tots els socis al llarg de 10 anys
     @Override
     public void run() {
-        float saldoCompte = this.COMPTE.getSaldo();
-        for (int any = 0; any < this.MAX_ANYS; any++) {
+        for (int any = 0; any < MAX_ANYS; any++) {
             for (int mes = 0; mes < 12; mes++) {
-                // ingresa quota
                 if (mes%2 == 0) {
-                    this.COMPTE.setSaldo(this.APORTACIO);
+                    // ingresa quota
+                    COMPTE.setSaldo(APORTACIO);
                 } else {
                     // treu quota amb una aportació negativa
-                    this.COMPTE.setSaldo(-this.APORTACIO);
+                    COMPTE.setSaldo(-APORTACIO);
+                }
+                try {
+                    sleep(RND.nextInt(ESPERA_MAX));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
