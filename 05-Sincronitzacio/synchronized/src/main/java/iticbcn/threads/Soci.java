@@ -25,12 +25,17 @@ public class Soci extends Thread{
     public void run() {
         for (int any = 0; any < MAX_ANYS; any++) {
             for (int mes = 0; mes < 12; mes++) {
-                if (mes%2 == 0) {
-                    // ingresa quota
-                    COMPTE.setSaldo(APORTACIO);
-                } else {
-                    // treu quota amb una aportació negativa
-                    COMPTE.setSaldo(-APORTACIO);
+                // faing un control de l'objecte COMPTE, per a que només puguin accedir
+                // 1 sol fil per cada execució de ficar i treure quota, no per separat
+                // perquè un segon fil podria accedir a treure diners
+                synchronized (COMPTE) {
+                    if (mes%2 == 0) {
+                        // ingresa quota
+                        COMPTE.setSaldo(APORTACIO);
+                    } else {
+                        // treu quota amb una aportació negativa
+                        COMPTE.setSaldo(-APORTACIO);
+                    }
                 }
                 try {
                     sleep(RND.nextInt(ESPERA_MAX));
