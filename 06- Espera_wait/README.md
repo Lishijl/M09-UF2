@@ -3,7 +3,7 @@
 Respostes a les preguntes teòriques de la pràctica 06 Espera Wait.
 
 #### 1. Per què s'atura l'execució al cap d'un temps?
-====================================================
+=====================================================
 
 Després d'executar el codi hem pogut comprobar que l'execució es para igualment tot i que estiguem utilitzant un while(true), que no es el mateix parar-se que la finalització del programa.
 
@@ -17,19 +17,25 @@ Es queden esperant indefinidament tots els fils i no arriba cap notifyAll() perq
 ![Sortida 0](screenshots/1-resultat-50-50.png)
 
 #### 2. Què passaria si en lloc de una probabilitat de 50%-50% fora de 70% (ferReserva)-30% (cancel·lar)? I si foren al revés les probabilitats? → Mostra la porció de codi modificada i la sortida resultant en cada un dels 2 casos
-====================================================
+=====================================================
 
 ##### CAS 1: Probabilitat 70% (ferReserva) - 30% (cancelaReserva)
 
-![Codi cas 1](screenshots/4-codi-cas-70-30.png)
-![Sortida 1](screenshots/5-resultat-70-30.png)
+En aquest cas el 70% de ferReserva(), les vegades que un fil o assistent que és executat, intentarà fer una reserva si hi han places disponibles.
+
+En cas de que no quedin places, es quedaràn en espera amb el wait() en menor temps els fils que queden i tots els que reiteren mentres entrin amb la probabilitat del 70% de fer una reserva, perquè les places disponibles s'esgoten més ràpid per l'intent de reserva que no pas la probabilitat de cancel·lació de reserves.
+
+![Codi cas 1](screenshots/2-codi-cas-70-30.png)
+![Sortida 1](screenshots/3-resultat-70-30.png)
 
 ##### CAS 2: Probabilitat 30% (ferReserva) - 70% (cancelaReserva)
 
-![Codi cas 2](screenshots/2-codi-cas-30-70.png)
-![Sortida 2](screenshots/3-resultat-30-70.png)
+En el cas del 30% de ferReserva(), l'execució tardarà molt més en parar-se perquè la probabilitat de cancel·lar una reserva és major que la de fer reserva i que només un cop esgotades totes les places, és quan es posa en espera l'execució de tots els fils que entrin perReserva().
+
+![Codi cas 2](screenshots/4-codi-cas-30-70.png)
+![Sortida 2](screenshots/5-resultat-30-70.png)
 
 #### 3. Perquè creus que fa falta la llista i no valdria només amb una variable sencera de reserves?
-====================================================
+=====================================================
 
 

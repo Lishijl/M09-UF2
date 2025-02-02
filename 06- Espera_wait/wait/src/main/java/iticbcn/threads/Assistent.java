@@ -13,14 +13,14 @@ public class Assistent extends Thread {
         this.ESDEVENIMENT = esdeveniment;
         this.RND = new Random();
         this.ESPERA_MAX = 1000;
-        this.PROBABILITAT = 0.5f;
+        this.PROBABILITAT = 0.7f;
     }
     public Esdeveniment getEsdeveniment() { return this.ESDEVENIMENT; }
     @Override
     public void run() {
         while(true) {
-            // PROBABILITAT=0.5f; 50% tant per fer reserva com per cancel·lar reserva
-            if (Math.random() < PROBABILITAT) {
+            // PROBABILITAT=0.7f; 70% per fer reserva i 30% per cancel·lar reserva
+            if (Math.random() <= PROBABILITAT) {
                 ESDEVENIMENT.ferReserva(this);
             } else {
                 ESDEVENIMENT.cancelaReserva(this);
