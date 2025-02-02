@@ -4,42 +4,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Esdeveniment {
-    private List<Assistent> assistents;
+    private final List<Assistent> ASSISTENTS;
     private int numMaxPlaces = 10;
-    private static Esdeveniment instance = null;
     private int placesDisponibles;
 
     public Esdeveniment(int numPlaces) {
+        this.ASSISTENTS = new ArrayList<>();
         this.numMaxPlaces = numPlaces;
-        this.assistents = new ArrayList<>();
         this.placesDisponibles = this.numMaxPlaces;
     }
-    synchronized public void ferReserva(Assistent assis) {
-        if (placesDisponibles > 0) {
-            assistents.add(assis);
-            placesDisponibles--;
-            mostraMissatge(assis);
-        } else {
-            // l'assistent espera per que una plaça s'alliberi
-            assis.wait();
-            mostraMissatge(assis);
+    // Pel control de synchronized en els mètodes, no ens cal controlar l'objecte Esdeveniment
+    // i perquè no es una instància única global, !singleton
+    public synchronized void ferReserva(Assistent assis) {
+        while (placesDisponibles == 0) {
+            try {
+                // Després de verificar que no hi han places disponibles, el fil s'espera fins ser notificat per notifyAll()
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        // Mentres hi hagi places disponibles o surti d'esperar en el wait(), afegeix assistent a la llista
+        ASSISTENTS.add(assis);
+        placesDisponibles--;
+        System.out.printf("\nAssistent-%s ha fet una reserva. Places disponibles: %d", assis.getName(), placesDisponibles);
+
     }
-    // només elimina si troba assistent coincident i busquem operació atòmica
-    synchronized public void cancelaReserva(Assistent assis) {
-        if (assistents.contains(assis)) {
-            assistents.remove(assis);
+    // Cancel·la reserva si el control de reservas troba assistent coincident, amb una operació atòmica
+    public synchronized void cancelaReserva(Assistent assis) {
+        if (ASSISTENTS.contains(assis)) {
+            ASSISTENTS.remove(assis);
             placesDisponibles++;
-            mostraMissatge(assis);
+            System.out.printf("\nAssistent-%s ha cancel·lat una reserva. Places disponibles: %d", assis.getName(), placesDisponibles);
+            // Un cop alliberada una plaça avisa a tots els fils que estan en espera per continuar amb la reserva de ferReserva()
+            notifyAll();
         } else {
-            mostraMissatge(assis);
+            System.out.printf("\nAssistent-%s no ha pogut cancel·lar una reserva inexistent. Places disponibles: %d", assis.getName(), placesDisponibles);
         }
-    }
-    public static Esdeveniment getInstance(int numPlaces) {
-        if (instance == null) instance = new Esdeveniment(numPlaces);
-        return instance;
-    }
-    public void mostraMissatge(Assistent assis) { 
-        System.out.printf("\nAssistent-%s no ha pogut fer una reserva, places esgotades. Places disponibles: %d", assis.getName(), placesDisponibles);
     }
 }

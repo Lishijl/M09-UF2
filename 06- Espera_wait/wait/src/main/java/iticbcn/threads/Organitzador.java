@@ -7,7 +7,7 @@ public class Organitzador {
     public Organitzador() {
         this.NUM_ASSIS = 10;
         this.ASSISTENTS = new Assistent[this.NUM_ASSIS];
-        this.ESDEVENIMENT = Esdeveniment.getInstance(5);
+        this.ESDEVENIMENT = new Esdeveniment(5);
     }
     public void inicialitzaAssistents() {
         for (int i = 0; i < ASSISTENTS.length; i++) {
@@ -17,5 +17,9 @@ public class Organitzador {
     public void arrancaAssistents() {
         for (Assistent assis : ASSISTENTS) { assis.start(); }
     }
-
+    public static void main(String[] args) {
+        Organitzador org = new Organitzador();
+        org.inicialitzaAssistents();
+        org.arrancaAssistents();
+    }
 }

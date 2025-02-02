@@ -19,6 +19,7 @@ public class Assistent extends Thread {
     @Override
     public void run() {
         while(true) {
+            // PROBABILITAT=0.5f; 50% tant per fer reserva com per cancel·lar reserva
             if (Math.random() < PROBABILITAT) {
                 ESDEVENIMENT.ferReserva(this);
             } else {
