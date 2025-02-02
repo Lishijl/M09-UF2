@@ -38,4 +38,10 @@ En el cas del 30% de ferReserva(), l'execució tardarà molt més en parar-se pe
 #### 3. Perquè creus que fa falta la llista i no valdria només amb una variable sencera de reserves?
 =====================================================
 
+La variable de valor enter només controla les places disponibles que té un esdeveniment per poder realitzar reserves.
 
+En canvi, no té cap control sobre els assistents que tenen una reserva i que qualsevol pugui cancel·lar una reserva inexistent.
+
+Per tant, la llista d'assistents és imprescrindible per comprobar que aquests existeixen en la llista i que han sigut afegits al fer una reserva, per poder cancel·lar-la de forma atòmica.
+
+Sinó, seria un descontrol alhora de cancel·lar una reserva i qualsevol assistent que no tingui una reserva podría cancel·lar i "alliberar" una plaça que no existeix que dona a pas a la possibilitat de fer més reserves de forma indefinida i es perdria el control del màxim de places disponibles, existents o reservades.
