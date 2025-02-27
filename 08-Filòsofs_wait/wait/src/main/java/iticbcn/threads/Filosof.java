@@ -6,11 +6,13 @@ public class Filosof extends Thread {
     private Forquilla forquillaEsquerra, forquillaDreta;
     private int gana;
     private Random rnd;
+    private int numFil;
     public Filosof() {}
     public Filosof(int numComensal) {
-        super(Integer.toString(numComensal));
+        super("" + numComensal);
         this.gana = 0;
         this.rnd = new Random();
+        this.numFil = numComensal;
     }
 
     public void menjar() {
@@ -19,53 +21,64 @@ public class Filosof extends Thread {
         espera(1000, 2001);
         System.out.printf("Filòsof: fil%s ha acabat de menjar\n", getName());
         deixarForquilles();
+        System.out.printf("Filòsof: fil%s deixa l'esquerra (%d) i la dreta (%d)\n", getName(), forquillaEsquerra.getNumF(), forquillaDreta.getNumF());
         this.gana = 0;
     }
 
-    public void agafarForquilles() {
+    public synchronized void agafarForquilles() {
         // intenta i només surt per menjar si ha agafat els dos
-        while (true) { 
-            if (Integer.parseInt(getName()) != 3) {
-                if (agafaForquillaEsquerra()) {
-                    System.out.printf("Filòsof: fil%s agafa la forquilla esquerra %d\n", getName(), forquillaEsquerra.getNumF());
-                    if (agafaForquillaDreta()) {
-                        System.out.printf("Filòsof: fil%s agafa la forquilla dreta %d\n", getName(), forquillaDreta.getNumF());
-                        return;
-                    } else {
-                        if (forquillaEsquerra.deixar()) {
-                            System.out.printf("Filòsof: fil%s deixa l'esquerra (%d) i espera (dreta ocupada)\n", getName(), forquillaDreta.getNumF());
-                            espera(500, 1001);
-                        }
-                        // tornarà a intentar
-                    }
+        do {
+            if (agafaForquillaEsquerra()) {
+                if (agafaForquillaDreta()) {
                 } else {
+                    deixarForquilles();
+                    System.out.printf("Filòsof: fil%s deixa l'esquerra (%d) i espera (dreta ocupada)\n", getName(), forquillaEsquerra.getNumF());
+                    passarGana();
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     espera(500, 1001);
                 }
             } else {
-                if (agafaForquillaDreta()) {
-                    System.out.printf("Filòsof: fil%s agafa la forquilla dreta %d\n", getName(), forquillaDreta.getNumF());
-                    if (agafaForquillaEsquerra()) {
-                        System.out.printf("Filòsof: fil%s agafa la forquilla esquerra %d\n", getName(), forquillaEsquerra.getNumF());
-                        return;
-                    } else {
-                        forquillaDreta.deixar();
-                        System.out.printf("Filòsof: fil%s deixa la dreta (%d) i espera (esquerra ocupada)\n", getName(), forquillaDreta.getNumF());
-                        espera(500, 1001);
-                    }
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                espera(500, 1001);
             }
-        }
+        } while (forquillaEsquerra.getPropietari() != getNumFil() && forquillaDreta.getPropietari() != getNumFil());
     }
     public boolean agafaForquillaEsquerra() {
-        return forquillaEsquerra.afagar(Integer.parseInt(getName()));
+        if (forquillaEsquerra.getPropietari() == Forquilla.LLIURE) {
+            forquillaEsquerra.setPropietari(getNumFil());
+            System.out.printf("Filòsof: fil%s agafa la forquilla esquerra %d\n", getName(), forquillaEsquerra.getNumF());
+            return true;
+        } else { 
+            return false; 
+        }
     }
     public boolean agafaForquillaDreta() {
-        return forquillaDreta.afagar(Integer.parseInt(getName()));
+        if (forquillaDreta.getPropietari() == Forquilla.LLIURE) {
+            forquillaDreta.setPropietari(getNumFil());
+            System.out.printf("Filòsof: fil%s agafa la forquilla dreta %d\n", getName(), forquillaDreta.getNumF());
+            return true;
+        } else {
+            return false;
+        }
     }
-    public void deixarForquilles() {
-        forquillaEsquerra.deixar();
-        forquillaDreta.deixar();
-        System.out.printf("Filòsof: fil%s deixa l'esquerra (%d) i la dreta (%d)\n", getName(), forquillaEsquerra.getNumF(), forquillaDreta.getNumF());
+    public synchronized void deixarForquilles() {
+        // deixa les forquilles si són el propietari
+        if (forquillaEsquerra.getPropietari() == getNumFil()) {
+            forquillaEsquerra.setPropietari(forquillaEsquerra.LLIURE);
+            notifyAll();
+        }
+        if (forquillaDreta.getPropietari() == getNumFil()) {
+            forquillaDreta.setPropietari(forquillaDreta.LLIURE);
+            notifyAll();
+        }
     }
     public void pensar() {
         System.out.printf("Filòsof: fil%s pensant\n", getName());
@@ -107,5 +120,13 @@ public class Filosof extends Thread {
 
     public void setForquillaDreta(Forquilla forquillaDreta) {
         this.forquillaDreta = forquillaDreta;
+    }
+
+    public int getNumFil() {
+        return numFil;
+    }
+
+    public void setNumFil(int numFil) {
+        this.numFil = numFil;
     }
 }
